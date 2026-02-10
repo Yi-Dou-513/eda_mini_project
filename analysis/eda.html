@@ -2271,6 +2271,126 @@ $ LONGITUDE  &lt;dbl&gt; -77.01829, -76.96098, -77.05946, -77.06859, -76.99376, 
 </div>
 </div>
 <p>I examined the variable class of the data set. While other variables aligned with the data documentation, the three datetime variables were stored as strings. Luckily, they had all the information I needed, including date, time, and time zone. So I used the function in the lubridate package to transform them into datetime format.</p>
+</section>
+<section id="exercise-05" class="level2">
+<h2 class="anchored" data-anchor-id="exercise-05">Exercise 05</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>crime_data <span class="ot">&lt;-</span> crime_data <span class="sc">|&gt;</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">crime_duration =</span> <span class="fu">as.numeric</span>(end_datetime <span class="sc">-</span> start_datetime, <span class="at">units =</span> <span class="st">&quot;hours&quot;</span>),</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">reporting_delay =</span> <span class="fu">as.numeric</span>(report_datetime <span class="sc">-</span> start_datetime, <span class="at">units =</span> <span class="st">&quot;hours&quot;</span>),</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>         <span class="at">month =</span> <span class="fu">month</span>(start_datetime, <span class="at">label =</span> <span class="cn">TRUE</span>, <span class="at">locale =</span> <span class="st">&quot;English&quot;</span>),</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>         <span class="at">quadrant =</span> <span class="fu">str_extract</span>(BLOCK, <span class="st">&quot;</span><span class="sc">\\</span><span class="st">b(NE|NW|SE|SW)</span><span class="sc">\\</span><span class="st">b&quot;</span>))</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>crime_data <span class="sc">|&gt;</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(OFFENSE)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 9 × 2
+  OFFENSE                        n
+  &lt;chr&gt;                      &lt;int&gt;
+1 ARSON                          4
+2 ASSAULT W/DANGEROUS WEAPON   926
+3 BURGLARY                     719
+4 HOMICIDE                     127
+5 MOTOR VEHICLE THEFT         3935
+6 ROBBERY                     1323
+7 SEX ABUSE                    101
+8 THEFT F/AUTO                5367
+9 THEFT/OTHER                11647</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>crime_data <span class="sc">|&gt;</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(METHOD)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 2
+  METHOD     n
+  &lt;chr&gt;  &lt;int&gt;
+1 GUN     1293
+2 KNIFE    391
+3 OTHERS 22465</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>crime_data <span class="sc">|&gt;</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(month) <span class="sc">|&gt;</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">monthly_crime_frequency =</span> <span class="fu">n</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 12 × 2
+   month monthly_crime_frequency
+   &lt;ord&gt;                   &lt;int&gt;
+ 1 Jan                      2009
+ 2 Feb                      1893
+ 3 Mar                      2073
+ 4 Apr                      2134
+ 5 May                      2307
+ 6 Jun                      2252
+ 7 Jul                      2334
+ 8 Aug                      2071
+ 9 Sep                      1901
+10 Oct                      1739
+11 Nov                      1737
+12 Dec                      1699</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>crime_data <span class="sc">|&gt;</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(month) <span class="sc">|&gt;</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">monthly_crime_frequency =</span> <span class="fu">n</span>()) <span class="sc">|&gt;</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">monthly_crime_frequency_mean =</span> <span class="fu">mean</span>(monthly_crime_frequency),</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">monthly_crime_frequency_median =</span> <span class="fu">median</span>(monthly_crime_frequency),</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">monthly_crime_frequency_max =</span> <span class="fu">max</span>(monthly_crime_frequency),</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>            <span class="at">monthly_crime_frequency_min =</span> <span class="fu">min</span>(monthly_crime_frequency))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 4
+  monthly_crime_frequency_mean monthly_crime_frequency_…¹ monthly_crime_freque…²
+                         &lt;dbl&gt;                      &lt;dbl&gt;                  &lt;int&gt;
+1                        2012.                       2040                   2334
+# ℹ abbreviated names: ¹​monthly_crime_frequency_median,
+#   ²​monthly_crime_frequency_max
+# ℹ 1 more variable: monthly_crime_frequency_min &lt;int&gt;</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>crime_data <span class="sc">|&gt;</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(SHIFT) <span class="sc">|&gt;</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">proportion =</span> n <span class="sc">/</span> <span class="fu">sum</span>(n)) <span class="sc">|&gt;</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(SHIFT, proportion) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 2
+  SHIFT    proportion
+  &lt;chr&gt;         &lt;dbl&gt;
+1 DAY           0.412
+2 EVENING       0.416
+3 MIDNIGHT      0.171</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>crime_data <span class="sc">|&gt;</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">crime_duration_mean =</span> <span class="fu">mean</span>(crime_duration, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>            <span class="at">crime_duration_sd =</span> <span class="fu">sd</span>(crime_duration, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 2
+  crime_duration_mean crime_duration_sd
+                &lt;dbl&gt;             &lt;dbl&gt;
+1                30.8              584.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>crime_data <span class="sc">|&gt;</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">reporting_delay_mean =</span> <span class="fu">mean</span>(reporting_delay, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>            <span class="at">reporting_delay_sd =</span> <span class="fu">sd</span>(reporting_delay, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 2
+  reporting_delay_mean reporting_delay_sd
+                 &lt;dbl&gt;              &lt;dbl&gt;
+1                 119.              2621.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>crime_data <span class="sc">|&gt;</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(quadrant) <span class="sc">|&gt;</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">crime_duration_median =</span> <span class="fu">median</span>(crime_duration, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">crime_duration_q75 =</span> <span class="fu">quantile</span>(crime_duration, <span class="fl">0.75</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">reporting_delay_median =</span> <span class="fu">median</span>(reporting_delay, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">reporting_delay_q75 =</span> <span class="fu">quantile</span>(reporting_delay, <span class="fl">0.75</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 5 × 5
+  quadrant crime_duration_median crime_duration_q75 reporting_delay_median
+  &lt;chr&gt;                    &lt;dbl&gt;              &lt;dbl&gt;                  &lt;dbl&gt;
+1 NE                       1                   4                      3.09
+2 NW                       0.833               2.52                   3.41
+3 SE                       1.15                3.13                   3.14
+4 SW                       1.45                7                      6.53
+5 &lt;NA&gt;                     1.1                 2.44                   3.20
+# ℹ 1 more variable: reporting_delay_q75 &lt;dbl&gt;</code></pre>
+</div>
+</div>
+<p>Here I listed some summary statistics of this data set, including 8 different kinds of statistics(frequency, proportion, mean, median, max, min, sd and quantile) and 3 continuous variables(crime frequency, crime duration and reporting delay) based on 5 grouping variables(OFFENSE, METHOD, month, SHIFT and quadrant). I think these summary statistics are sufficient for understanding the univariate distributions in the data, as they show the concentration and dispersion of the key variable across different grouping variables.</p>
 
 </section>
 

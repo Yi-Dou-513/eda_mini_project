@@ -38,3 +38,46 @@ str(crime_data$report_datetime)
 ```
 
 I examined the variable class of the data set. While other variables aligned with the data documentation, the three datetime variables were stored as strings. Luckily, they had all the information I needed, including date, time, and time zone. So I used the function in the lubridate package to transform them into datetime format.
+
+## Exercise 05
+
+```{r}
+crime_data <- crime_data |>
+  mutate(crime_duration = as.numeric(end_datetime - start_datetime, units = "hours"),
+         reporting_delay = as.numeric(report_datetime - start_datetime, units = "hours"),
+         month = month(start_datetime, label = TRUE, locale = "English"),
+         quadrant = str_extract(BLOCK, "\\b(NE|NW|SE|SW)\\b"))
+crime_data |>
+  count(OFFENSE)
+crime_data |>
+  count(METHOD)
+crime_data |>
+  group_by(month) |>
+  summarise(monthly_crime_frequency = n())
+crime_data |>
+  group_by(month) |>
+  summarise(monthly_crime_frequency = n()) |>
+  summarise(monthly_crime_frequency_mean = mean(monthly_crime_frequency),
+            monthly_crime_frequency_median = median(monthly_crime_frequency),
+            monthly_crime_frequency_max = max(monthly_crime_frequency),
+            monthly_crime_frequency_min = min(monthly_crime_frequency))
+crime_data |>
+  count(SHIFT) |>
+  mutate(proportion = n / sum(n)) |>
+  select(SHIFT, proportion) 
+crime_data |>
+  summarise(crime_duration_mean = mean(crime_duration, na.rm = TRUE),
+            crime_duration_sd = sd(crime_duration, na.rm = TRUE))
+crime_data |>
+  summarise(reporting_delay_mean = mean(reporting_delay, na.rm = TRUE),
+            reporting_delay_sd = sd(reporting_delay, na.rm = TRUE))
+crime_data |>
+  group_by(quadrant) |>
+  summarise(crime_duration_median = median(crime_duration, na.rm = TRUE),
+            crime_duration_q75 = quantile(crime_duration, 0.75, na.rm = TRUE),
+            reporting_delay_median = median(reporting_delay, na.rm = TRUE),
+            reporting_delay_q75 = quantile(reporting_delay, 0.75, na.rm = TRUE))
+  
+```
+
+Here I listed some summary statistics of this data set, including 8 different kinds of statistics(frequency, proportion, mean, median, max, min, sd and quantile) and 3 continuous variables(crime frequency, crime duration and reporting delay) based on 5 grouping variables(OFFENSE, METHOD, month, SHIFT and quadrant). I think these summary statistics are sufficient for understanding the univariate distributions in the data, as they show the concentration and dispersion of the key variable across different grouping variables.
