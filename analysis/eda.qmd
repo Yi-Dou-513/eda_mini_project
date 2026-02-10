@@ -1,7 +1,9 @@
 ---
 title: "Assignment3"
 author: "Yi Dou"
-format: html
+format: 
+  html:
+    embed-resources: true
 editor: visual
 warning: false
 message: false
@@ -9,6 +11,7 @@ bibliography: references.bib
 ---
 
 ## Exercise 03
+
 ```{r, message = FALSE}
 library(tidyverse)
 crime_data <- read_csv("data/Crime_Incidents_in_2025.csv")
