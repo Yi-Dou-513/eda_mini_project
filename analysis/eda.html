@@ -2247,7 +2247,30 @@ $ LATITUDE   &lt;dbl&gt; 38.90252, 38.92168, 38.92901, 38.96309, 38.92158, 38.90
 $ LONGITUDE  &lt;dbl&gt; -77.01829, -76.96098, -77.05946, -77.06859, -76.99376, -77.…</code></pre>
 </div>
 </div>
-<p>This project uses administrative crime data from Washington, DC (<span class="citation" data-cites="dc_crime_2025">District of Columbia Metropolitan Police Department (<a href="#ref-dc_crime_2025" role="doc-biblioref">2025</a>)</span>). The time period represented by the data is from 2025-01-01 to 2026-01-01. The data were collected through administrative records from the Metropolitan Police Department based on reported crime incidents. Each observation represents a single reported crime incident and can be uniquely identified using the Crime Control Number (CCN). The data set is administrative and cross-sectional data including numeric, categorical, timeseries and geospatial variables. It does not include weights.</p>
+<p>This project uses administrative crime data from Washington, DC (<span class="citation" data-cites="dc_crime_2025">District of Columbia Metropolitan Police Department (<a href="#ref-dc_crime_2025" role="doc-biblioref">2025</a>)</span>). The time period represented by the data is from 2025-01-01 to 2026-01-01(UTC). The data were collected through administrative records from the Metropolitan Police Department based on reported crime incidents. Each observation represents a single reported crime incident and can be uniquely identified using the Crime Control Number (CCN). The data set is administrative and cross-sectional data including numeric, categorical, timeseries and geospatial variables. It does not include weights.</p>
+</section>
+<section id="exercise-04" class="level2">
+<h2 class="anchored" data-anchor-id="exercise-04">Exercise 04</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sapply</span>(crime_data, class)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>        CCN  REPORT_DAT  START_DATE    END_DATE       BLOCK     OFFENSE 
+  &quot;numeric&quot; &quot;character&quot; &quot;character&quot; &quot;character&quot; &quot;character&quot; &quot;character&quot; 
+     METHOD       SHIFT    LATITUDE   LONGITUDE 
+&quot;character&quot; &quot;character&quot;   &quot;numeric&quot;   &quot;numeric&quot; </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>crime_data <span class="ot">&lt;-</span> crime_data <span class="sc">|&gt;</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">report_datetime =</span> <span class="fu">ymd_hms</span>(REPORT_DAT, <span class="at">tz =</span> <span class="st">&quot;UTC&quot;</span>),</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">start_datetime  =</span> <span class="fu">ymd_hms</span>(START_DATE,  <span class="at">tz =</span> <span class="st">&quot;UTC&quot;</span>),</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">end_datetime    =</span> <span class="fu">ymd_hms</span>(END_DATE,    <span class="at">tz =</span> <span class="st">&quot;UTC&quot;</span>)</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(crime_data<span class="sc">$</span>report_datetime)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> POSIXct[1:24149], format: &quot;2025-10-29 22:32:38&quot; &quot;2025-11-12 23:18:32&quot; &quot;2025-07-23 23:13:42&quot; ...</code></pre>
+</div>
+</div>
+<p>I examined the variable class of the data set. While other variables aligned with the data documentation, the three datetime variables were stored as strings. Luckily, they had all the information I needed, including date, time, and time zone. So I used the function in the lubridate package to transform them into datetime format.</p>
 
 </section>
 

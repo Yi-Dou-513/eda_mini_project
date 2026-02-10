@@ -22,4 +22,19 @@ crime_data |>
   glimpse()
 ```
 
-This project uses administrative crime data from Washington, DC (@dc_crime_2025). The time period represented by the data is from 2025-01-01 to 2026-01-01. The data were collected through administrative records from the Metropolitan Police Department based on reported crime incidents. Each observation represents a single reported crime incident and can be uniquely identified using the Crime Control Number (CCN). The data set is administrative and cross-sectional data including numeric, categorical, timeseries and geospatial variables. It does not include weights.
+This project uses administrative crime data from Washington, DC (@dc_crime_2025). The time period represented by the data is from 2025-01-01 to 2026-01-01(UTC). The data were collected through administrative records from the Metropolitan Police Department based on reported crime incidents. Each observation represents a single reported crime incident and can be uniquely identified using the Crime Control Number (CCN). The data set is administrative and cross-sectional data including numeric, categorical, timeseries and geospatial variables. It does not include weights.
+
+## Exercise 04
+
+```{r}
+sapply(crime_data, class)
+crime_data <- crime_data |>
+  mutate(
+    report_datetime = ymd_hms(REPORT_DAT, tz = "UTC"),
+    start_datetime  = ymd_hms(START_DATE,  tz = "UTC"),
+    end_datetime    = ymd_hms(END_DATE,    tz = "UTC")
+  )
+str(crime_data$report_datetime)
+```
+
+I examined the variable class of the data set. While other variables aligned with the data documentation, the three datetime variables were stored as strings. Luckily, they had all the information I needed, including date, time, and time zone. So I used the function in the lubridate package to transform them into datetime format.
