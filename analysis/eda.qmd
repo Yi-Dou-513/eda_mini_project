@@ -81,3 +81,58 @@ crime_data |>
 ```
 
 Here I listed some summary statistics of this data set, including 8 different kinds of statistics(frequency, proportion, mean, median, max, min, sd and quantile) and 3 continuous variables(crime frequency, crime duration and reporting delay) based on 5 grouping variables(OFFENSE, METHOD, month, SHIFT and quadrant). I think these summary statistics are sufficient for understanding the univariate distributions in the data, as they show the concentration and dispersion of the key variable across different grouping variables.
+
+## Exercise 06
+
+```{r}
+monthly_counts <- crime_data |>
+  filter(!is.na(quadrant)) |>
+  count(quadrant, month)
+monthly_mean <- monthly_counts |>
+  group_by(month) |>
+  summarise(quadrant_mean = mean(n))
+
+ggplot(data = monthly_counts,
+       mapping = aes(x = month, y = n, fill = quadrant)) +
+  geom_col(position = "dodge") +
+  geom_line(data = monthly_mean,
+            aes(x = month, y = quadrant_mean, group = 1),
+            inherit.aes = FALSE,
+            color = "black",
+            linewidth = 0.75) +
+  scale_fill_manual(values = c(NE = "orange", NW = "red", 
+                               SE = "purple",  SW = "blue" )) +
+  labs(x = "Month",
+       y = "Crime Frequency",
+       fill = "Quadrant",
+       title = paste0("Monthly Crime Counts by Geographic Quadrant",
+                      "in Washington, DC (2025)") ,
+       subtitle = paste0("Bars show monthly crime incidents by quadrant; ",
+                         "the line indicates the average across quadrants") ) +
+  theme_minimal()
+
+```
+
+```{r}
+crime_data |>
+  slice_sample(n = 200) |>
+  ggplot(aes(x = LONGITUDE, y = LATITUDE)) +
+  geom_point(na.rm = TRUE, color = "blue", alpha = 0.4) +
+  geom_vline(xintercept = -77.0091, linetype = "dashed", color = "black") +
+  geom_hline(yintercept = 38.8899, linetype = "dashed", color = "black") +
+  scale_x_continuous(
+    name = "Longitude (°W)",
+    labels = function(x) paste0(abs(round(x, 2)), "°W")
+  ) +
+  scale_y_continuous(
+    name = "Latitude (°N)",
+    labels = function(y) paste0(round(y, 2), "°N")
+  ) +
+  labs(title = paste0("Spatial Distribution of Crime Incidents",
+                      "in Washington, DC (Sample of 200)"),
+       subtitle = paste0("Points show sampled crime locations;",
+                         "dashed lines indicate quadrant boundaries",
+                         "relative to the U.S. Capitol")) +
+  theme_minimal() 
+
+```
