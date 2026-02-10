@@ -136,3 +136,11 @@ crime_data |>
   theme_minimal() 
 
 ```
+
+## Exercise 07
+
+Here are some additional analysis I would perform on the data:
+
+-   Merging it with some data sets which contains demographic data of Washington, DC to understand the distribution of crimes more thoroughly
+-   Finding the determinants of reporting delay by running some machine learning models
+-   Creating some real geospatial visualizations which is more readable than the second figure based on the longitude and latitude data
