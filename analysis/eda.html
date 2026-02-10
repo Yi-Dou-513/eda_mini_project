@@ -21,7 +21,62 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-</style>
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
 
 <script src="eda_files/libs/clipboard/clipboard.min.js"></script>
@@ -70,9 +125,40 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
+<section id="exercise-03" class="level2">
+<h2 class="anchored" data-anchor-id="exercise-03">Exercise 03</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>crime_data <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/Crime_Incidents_in_2025.csv"</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>crime_data <span class="ot">&lt;-</span> crime_data <span class="sc">|&gt;</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(CCN, REPORT_DAT, START_DATE, END_DATE, BLOCK, </span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>         OFFENSE, METHOD, SHIFT, LATITUDE, LONGITUDE) </span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>crime_data <span class="sc">|&gt;</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 24,149
+Columns: 10
+$ CCN        &lt;dbl&gt; 25424649, 25172305, 25111532, 25043107, 25045981, 25047776,…
+$ REPORT_DAT &lt;chr&gt; "2025/10/29 22:32:38+00", "2025/11/12 23:18:32+00", "2025/0…
+$ START_DATE &lt;chr&gt; "2025/10/26 22:40:00+00", "2025/11/10 10:00:00+00", "2025/0…
+$ END_DATE   &lt;chr&gt; "2025/10/27 00:00:00+00", "2025/11/10 21:00:00+00", "2025/0…
+$ BLOCK      &lt;chr&gt; "444 - 499 BLOCK OF K STREET NW", "2237- 2399 BLOCK OF 33RD…
+$ OFFENSE    &lt;chr&gt; "THEFT/OTHER", "THEFT F/AUTO", "THEFT/OTHER", "THEFT F/AUTO…
+$ METHOD     &lt;chr&gt; "OTHERS", "OTHERS", "OTHERS", "OTHERS", "OTHERS", "OTHERS",…
+$ SHIFT      &lt;chr&gt; "EVENING", "EVENING", "EVENING", "EVENING", "EVENING", "EVE…
+$ LATITUDE   &lt;dbl&gt; 38.90252, 38.92168, 38.92901, 38.96309, 38.92158, 38.90644,…
+$ LONGITUDE  &lt;dbl&gt; -77.01829, -76.96098, -77.05946, -77.06859, -76.99376, -77.…</code></pre>
+</div>
+</div>
+<p>This project uses administrative crime data from Washington, DC (<span class="citation" data-cites="dc_crime_2025">District of Columbia Metropolitan Police Department (<a href="#ref-dc_crime_2025" role="doc-biblioref">2025</a>)</span>). The time period represented by the data is from 2025-01-01 to 2026-01-01. The data were collected through administrative records from the Metropolitan Police Department based on reported crime incidents. Each observation represents a single reported crime incident and can be uniquely identified using the Crime Control Number (CCN). The data set is administrative and cross-sectional data including numeric, categorical, timeseries and geospatial variables. It does not include weights.</p>
 
+</section>
 
-</main>
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="ref-dc_crime_2025" class="csl-entry" role="listitem">
+District of Columbia Metropolitan Police Department. 2025. <span>“Crime Incidents in 2025.”</span> DC Open Data. <a href="https://opendata.dc.gov/api/download/v1/items/74d924ddc3374e3b977e6f002478cb9b/csv?layers=7">https://opendata.dc.gov/api/download/v1/items/74d924ddc3374e3b977e6f002478cb9b/csv?layers=7</a>.
+</div>
+</div></section></div></main>
 <!-- /main column -->
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {

@@ -5,4 +5,18 @@ format: html
 editor: visual
 warning: false
 message: false
+bibliography: references.bib
 ---
+
+## Exercise 03
+```{r, message = FALSE}
+library(tidyverse)
+crime_data <- read_csv("data/Crime_Incidents_in_2025.csv")
+crime_data <- crime_data |>
+  select(CCN, REPORT_DAT, START_DATE, END_DATE, BLOCK, 
+         OFFENSE, METHOD, SHIFT, LATITUDE, LONGITUDE) 
+crime_data |>
+  glimpse()
+```
+
+This project uses administrative crime data from Washington, DC (@dc_crime_2025). The time period represented by the data is from 2025-01-01 to 2026-01-01. The data were collected through administrative records from the Metropolitan Police Department based on reported crime incidents. Each observation represents a single reported crime incident and can be uniquely identified using the Crime Control Number (CCN). The data set is administrative and cross-sectional data including numeric, categorical, timeseries and geospatial variables. It does not include weights.
